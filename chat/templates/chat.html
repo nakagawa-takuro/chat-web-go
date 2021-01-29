@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <title>チャット</title>
+        <style>
+            input {display: block;}
+            ul { list-style: none;}
+        </style>
+    </head>
+    <body>
+        <ul id="messages"></ul>
+        WebSocketを用いたチャットアプリケーション
+        <form id="chatbox">
+            <textarea></textarea>
+            <input type="submit" value="送信" />
+        </form>
+        <script src="//ajax.googlepis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+        </script>
+        <script>
+            $(function(){
+                var soket = null;
+                var msgBox = $("#chatbox textarea");
+                var messages = $("#massages");
+                $("#chatbox").submit(function(){
+                    if (!msgbox.val()) return false;
+                    if(!socket){
+                        alert("エラー：　WebSocket接続が行われてません。");
+                        return false;
+                    }
+                    socket.send(msgBox.val());
+                    msgBox.val(" ");
+                    return false;
+                });
+                if (!window["WebSocket"]){
+                    alert("エラー: WebSocketに対応してないブラウザです。")
+                } else {
+                    socket = new Websoket("ws://loacalhost:8080/room");
+                    socket.onclose = function(){
+                        alert("接続が終了しました。");
+                    }
+                    socket.onmassage = function(e){
+                        messages.append($("<li>").text(e.data));
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
